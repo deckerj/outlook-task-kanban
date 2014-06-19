@@ -16,36 +16,55 @@ angular.module('todoApp').service('todoService', ['loggingService',
 
 					var ns = ol.GetNameSpace("MAPI");
 
-					var inbox = ns.GetDefaultFolder(13); //see http://msdn.microsoft.com/en-US/library/office/ff861868(v=office.15).aspx
+					var inbox = ns.GetDefaultFolder(28); //see http://msdn.microsoft.com/en-US/library/office/ff861868(v=office.15).aspx
 					//to access sub folders, use .Folders(1)
 
 					var items = inbox.Items;
 					items.Sort("Importance", true);
+               loggingService.info("Items count " + items.Count);
 
-					var i = 1;
-					while (true) {
-						if (items(i) === undefined)
+               for (var i = 1; i < items.Count; ++i) {
+                  var item = items(i);
+
+						if (item === undefined)
 							break;
 
-						if (i > 200)
-							break;
+                  // loggingService.info(i + " " + item.Status + " " + item.Subject);
 
-						switch (items(i).Status) {
-							case 0:
-								$scope.open.push(createTodoFromOutlook(items(i)));
-								break;
-							case 1:
-								$scope.inProgress.push(createTodoFromOutlook(items(i)));
-								break;
-							case 2:
-								$scope.done.push(createTodoFromOutlook(items(i)));
-								break;
-							default:
-								$scope.todos.push(createTodoFromOutlook(items(i)));
-								break;
-						}
-
-						i++;
+                  if (item.Status == undefined) {
+                     // Mail
+                     switch (item.FlagStatus) {
+                        // olNoFlag
+                        case 0:
+                           // $scope.open.push(createTodoFromOutlook(item));
+                           break;
+                        // olFlagComplete
+                        case 1:
+                           $scope.done.push(createTodoFromOutlook(item));
+                           break;
+                        // olFlagMarked
+                        case 2:
+                           $scope.open.push(createTodoFromOutlook(item));
+                           break;
+                        default:
+                           break;
+                     }
+                  } else {
+                     // Task
+                     switch (item.Status) {
+                        case 0:
+                           $scope.open.push(createTodoFromOutlook(item));
+                           break;
+                        case 1:
+                           $scope.inProgress.push(createTodoFromOutlook(item));
+                           break;
+                        case 2:
+                           $scope.done.push(createTodoFromOutlook(item));
+                           break;
+                        default:
+                           break;
+                     }
+                  }
 					}
 
 				} else {
