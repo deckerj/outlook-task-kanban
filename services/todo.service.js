@@ -21,56 +21,54 @@ angular.module('todoApp').service('todoService', ['loggingService',
 
 					var items = inbox.Items;
 					items.Sort("Importance", true);
-               loggingService.info("Items count " + items.Count);
-
-               for (var i = 1; i < items.Count; ++i) {
-                  var item = items(i);
+					loggingService.info("Items count" + items.Count);
+					
+					for (i=0; i < items.Count; i++) {
+						var item = items(i);
 
 						if (item === undefined)
 							break;
 
-                  // loggingService.info(i + " " + item.Status + " " + item.Subject);
+						loggingService.info(i + " " + item.Status + " " + item.Subject);
 
-                  if (item.Status == undefined) {
-                     // Mail
-                     switch (item.FlagStatus) {
-                        // olNoFlag
-                        case 0:
-                           // $scope.open.push(createTodoFromOutlook(item));
-                           break;
-                        // olFlagComplete
-                        case 1:
-                           $scope.done.push(createTodoFromOutlook(item));
-                           break;
-                        // olFlagMarked
-                        case 2:
-                           $scope.open.push(createTodoFromOutlook(item));
-                           break;
-                        default:
-                           break;
-                     }
-                  } else {
-                     // Task
-                     switch (item.Status) {
-                        case 0:
-                           $scope.open.push(createTodoFromOutlook(item));
-                           break;
-                        case 1:
-                           $scope.inProgress.push(createTodoFromOutlook(item));
-                           break;
-                        case 2:
-                           $scope.done.push(createTodoFromOutlook(item));
-                           break;
-                        default:
-                           break;
-                     }
-                  }
+						if (item.Status == undefined) {
+							// MailItem
+							switch (item.FlagStatus) {
+								// olNoFlag
+								case 0:
+									// $scope.open.push(createTodoFromOutlook(item));
+									break;
+									// olFlagComplete
+								case 1:
+									$scope.done.push(createTodoFromOutlook(item));
+									break;
+									// olFlagMarked
+								case 2:
+									$scope.open.push(createTodoFromOutlook(item));
+									break;
+								default:
+									break;
+							}
+						} else {
+							// TaskItem
+							switch (item.Status) {
+								case 0:
+									$scope.open.push(createTodoFromOutlook(item));
+									break;
+								case 1:
+									$scope.inProgress.push(createTodoFromOutlook(item));
+									break;
+								case 2:
+									$scope.done.push(createTodoFromOutlook(item));
+									break;
+								default:
+									break;
+							}
+						}
 					}
-
 				} else {
 					$scope.outsideOfOutlook = true;
 				}
-
 			} catch (e) {
 				loggingService.info(e);
 			}
